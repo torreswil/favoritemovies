@@ -4,8 +4,8 @@ import { FavoritemoviesController } from './favoritemovies.controller';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [HttpModule],
   providers: [TmdbserviceService],
-  controllers: [FavoritemoviesController]
+  controllers: [FavoritemoviesController],
+  imports: [HttpModule],
 })
 export class FavoritemoviesModule {}
