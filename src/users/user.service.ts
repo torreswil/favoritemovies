@@ -32,6 +32,29 @@ export class UserService {
     return result.Item as User | undefined;
   }
 
+  async getUserByName(name: string): Promise<User | undefined> {
+    const params: DynamoDB.DocumentClient.ScanInput  = {
+      TableName: this.tableName,
+      FilterExpression: '#name = :name',
+      ExpressionAttributeNames: {
+        '#name': 'name',
+      },
+      ExpressionAttributeValues: {
+        ':name': name,
+      },
+    };
+    console.log('params', params);
+
+    const result = await this.documentClient.scan(params).promise();
+
+    if (result.Items && result.Items.length > 0) {
+      // Si se encuentra al menos un usuario, se devuelve el primero de la lista
+      return result.Items[0] as User;
+    }
+  
+    return undefined;
+  }
+
   async createUser(user: User): Promise<User> {
     const params: DynamoDB.DocumentClient.PutItemInput = {
       TableName: this.tableName,
