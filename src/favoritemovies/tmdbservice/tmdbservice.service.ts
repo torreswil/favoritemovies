@@ -30,5 +30,16 @@ export class TmdbserviceService {
         return data;
     }
 
-
+    async searchMovies(query: string, language: string): Promise<any> {
+        const url = `${this.baseUrl}/search/movie?api_key=${this.apiKey}&query=${query}&language=${language}`;
+        const { data } = await firstValueFrom(
+            this.httpService.get(url).pipe(
+                catchError((error) => {
+                    //this.logger.error(error);
+                    throw 'An error happened!';
+                }),
+            ),
+        );
+        return data;
+    }
 }

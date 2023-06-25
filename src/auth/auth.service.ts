@@ -13,7 +13,6 @@ export class AuthService {
     constructor(
         private readonly configService: ConfigService,
     ) {
-        this.logger.log('AuthService constructor');
         this.userPool = new CognitoUserPool({
             UserPoolId: this.configService.get<string>('COGNITO_USER_POOL_ID'),
             ClientId: this.configService.get<string>('COGNITO_CLIENT_ID'),
