@@ -1,30 +1,76 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+## Deployment Manual
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This manual provides the necessary steps to deploy and configure the service correctly.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+### Prerequisites
 
-## Description
+Before getting started, make sure you have the following requirements installed:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Node.js (version 18.0 or higher)
+- Amazon Web Services (AWS) account
+- AWS credentials with permissions to create and configure the necessary services.
+
+### Obtaining a TMDb API Key
+
+1. Visit [The Movie Database (TMDb) website](https://www.themoviedb.org/).
+2. Create a free account or log in if you already have one.
+3. Once logged in, access your [developer dashboard](https://www.themoviedb.org/settings/api).
+4. Click on the "Request an API Key" button.
+5. Provide the required information and accept the terms and conditions.
+6. You will receive a generated API key. Take note of this key as you will need it in the following steps.
+
+### Configuration of Environment Variables
+
+1. Create a `.env` file in the root directory of the project.
+
+2. Open the `.env` file and define the following environment variables:
+
+```plaintext
+MOVIE_DB_API_KEY='Your TMDb API Key'
+MOVIE_DB_API_URL='https://api.themoviedb.org/3'
+MOVIE_DB_ACCESS_TOKEN='Your TMDb Access Token'
+MOVIE_DB_BASE_URL='https://api.themoviedb.org/3'
+
+AWS_ACCESS_KEY_ID='Your AWS Access Key ID'
+AWS_SECRET_ACCESS_KEY='Your AWS Secret Access Key'
+AWS_REGION='us-east-1'
+
+COGNITO_USER_POOL_ID='Cognito User Pool ID'
+COGNITO_CLIENT_ID='Cognito Client ID'
+```
+
+Make sure to replace the values within the quotes with the corresponding information.
+
+### Configuration of DynamoDB Tables
+
+1. Log in to the [AWS Console](https://console.aws.amazon.com/).
+2. Navigate to the DynamoDB service.
+3. Create the following tables with their respective primary keys:
+
+   - "users" table:
+     - Primary Key: userId (String type)
+
+   - "movies" table:
+     - Primary Key: movieId (String type)
+
+   - "favoriteMovies" table:
+     - Primary Key: favoriteMovieId (String type)
+
+   - "movienotes" table:
+     - Primary Key: movienoteId (String type)
+
+### Configuration of Cognito Client
+
+1. Access the [AWS Console](https://console.aws.amazon.com/).
+2. Navigate to the Cognito service.
+3. Create a new user pool group.
+4. Configure the authentication flow options and client settings according to your needs.
+5. Take note of the generated "User Pool ID" and "Client ID" as you will need them in the configuration of environment variables.
+
+### Service Deployment
+
+1. Clone this repository to your local machine.
+2. Open a terminal and navigate to the project directory.
 
 ## Installation
 
@@ -58,16 +104,5 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
-## Support
+##  [OpenAPI specification](http://localhost:3000/api-docs)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
