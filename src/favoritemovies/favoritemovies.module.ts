@@ -11,7 +11,16 @@ import { JwtService } from '@nestjs/jwt';
 import { MovieService } from 'src/movies/movies.service';
 
 @Module({
-  providers: [TmdbserviceService, UserService, FavoritemoviesService,ConfigService,DynamoDBProvider, AuthService, JwtService, MovieService],
+  providers: [
+    TmdbserviceService,
+    UserService,
+    FavoritemoviesService,
+    ConfigService,
+    DynamoDBProvider,
+    AuthService,
+    JwtService,
+    MovieService,
+  ],
   controllers: [FavoritemoviesController],
   imports: [HttpModule],
 })

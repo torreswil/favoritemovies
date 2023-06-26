@@ -5,9 +5,6 @@ import { FavoriteMovie } from './favoritemovie.entity';
 import { MovieService } from 'src/movies/movies.service';
 import { TmdbserviceService } from './tmdbservice/tmdbservice.service';
 import { Movie } from 'src/movies/movie.entity';
-import { UserService } from 'src/users/user.service';
-import { json } from 'stream/consumers';
-import { ConditionExpression } from 'aws-sdk/clients/dynamodb';
 
 
 @Injectable()
@@ -57,7 +54,7 @@ export class FavoritemoviesService {
         return await this.mapper.put(toSave);
     }
 
-    async getFavoriteMovies(userId: string): Promise<FavoriteMovie[]> {
+    async getFavoriteMovies( userId: string): Promise<FavoriteMovie[]> {
         const scanOptions: ScanOptions = {
             filter: {
               type: 'Equals',

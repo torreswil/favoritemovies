@@ -1,8 +1,6 @@
 import { Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { TmdbserviceService } from './tmdbservice/tmdbservice.service';
 import { AuthGuard } from '@nestjs/passport';
-import { UserService } from 'src/users/user.service';
-import { User } from 'src/users/user.interface';
 import { FavoritemoviesService } from './favoritemovies.service';
 import { AuthService } from 'src/auth/auth.service';
 

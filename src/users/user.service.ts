@@ -33,7 +33,7 @@ export class UserService {
   }
 
   async getUserByName(name: string): Promise<User | undefined> {
-    const params: DynamoDB.DocumentClient.ScanInput  = {
+    const params: DynamoDB.DocumentClient.ScanInput = {
       TableName: this.tableName,
       FilterExpression: '#name = :name',
       ExpressionAttributeNames: {
@@ -51,7 +51,7 @@ export class UserService {
       // Si se encuentra al menos un usuario, se devuelve el primero de la lista
       return result.Items[0] as User;
     }
-  
+
     return undefined;
   }
 
@@ -60,14 +60,17 @@ export class UserService {
       TableName: this.tableName,
       Item: user,
     };
-    this.documentClient
+    this.documentClient;
     console.log('params', params);
     await this.documentClient.put(params).promise();
-    
+
     return user;
   }
 
-  async updateUser(userId: string, updatedUser: User): Promise<User | undefined> {
+  async updateUser(
+    userId: string,
+    updatedUser: User,
+  ): Promise<User | undefined> {
     const params: DynamoDB.DocumentClient.UpdateItemInput = {
       TableName: this.tableName,
       Key: { userId },

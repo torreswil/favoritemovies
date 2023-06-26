@@ -6,14 +6,16 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { MovieService } from './movies/movies.service';
 import { DynamoDBProvider } from './config/dynamodb.provider';
+import { MovienotesModule } from './movienotes/movienotes.module';
 
 @Module({
   imports: [
-    ConfigAppModule, 
+    ConfigAppModule,
     FavoritemoviesModule,
     ConfigModule.forRoot(),
     AuthModule,
     UsersModule,
+    MovienotesModule,
   ],
   providers: [MovieService, DynamoDBProvider],
 })
