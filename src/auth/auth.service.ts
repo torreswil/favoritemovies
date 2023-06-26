@@ -1,12 +1,12 @@
 import { ConfigService } from '@nestjs/config';
-import { Injectable, Logger} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   AuthenticationDetails,
   CognitoUser,
   CognitoUserPool,
 } from 'amazon-cognito-identity-js';
-import { User } from 'src/users/user.interface';
-import { UserService } from 'src/users/user.service';
+import { User } from '../users/user.interface';
+import { UserService } from '../users/user.service';
 @Injectable()
 export class AuthService {
   private userPool: CognitoUserPool;
@@ -23,7 +23,7 @@ export class AuthService {
     });
   }
 
-  authenticateUser(user: { name: string, password: string }) {
+  authenticateUser(user: { name: string, password: string }): Promise<any> {
     const { name, password } = user;
 
     const authenticationDetails = new AuthenticationDetails({
@@ -40,23 +40,7 @@ export class AuthService {
     return new Promise((resolve, reject) => {
       return newUser.authenticateUser(authenticationDetails, {
         onSuccess: async result => {
-          try {
-            // Verificar si el usuario ya existe en la tabla
-            let existingUser = await this.userService.getUserByName(name);
-            if (!existingUser) {
-              // Crear el nuevo usuario con el ID de Cognito
-              const newUser: User = {
-                userId: result.getIdToken().payload.sub, // Obtener el ID de Cognito
-                name: name,
-                email: '', // Puedes asignar un valor por defecto o dejarlo vacío
-              };
-              existingUser = await this.userService.createUser(newUser);
-            }
-
-            resolve(result);
-          } catch (error) {
-            reject(error);
-          }
+          resolve(result);
         },
         onFailure: err => {
           reject(err);

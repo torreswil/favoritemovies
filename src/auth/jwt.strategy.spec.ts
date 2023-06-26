@@ -24,7 +24,7 @@ describe('JwtStrategy', () => {
 
       const result = await jwtStrategy.validate(payload);
 
-      expect(result).toBe(true);
+      expect(result).toStrictEqual({ sub: 'user-id' });
     });
 
     it('should return false when payload.sub does not exist', async () => {

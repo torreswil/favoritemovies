@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
 import { ConfigAppModule } from '../config/config.module';
-import { CognitoUserPool, CognitoUser, AuthenticationDetails } from 'amazon-cognito-identity-js';
+import { CognitoUser, AuthenticationDetails, CognitoUserSession, CognitoIdToken } from 'amazon-cognito-identity-js';
+import { UserService } from '../users/user.service';
+import { resolve } from 'path';
+import { User } from 'src/users/user.interface';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -11,7 +14,7 @@ describe('AuthService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigAppModule],
-      providers: [ConfigService, AuthService],
+      providers: [ConfigService, AuthService, UserService],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
@@ -34,19 +37,25 @@ describe('AuthService', () => {
       }
     });
 
+    // Mock the userService createUser method
+    const existingUser: User = {
+      userId: 'existingUserId',
+      name: 'testuser',
+      email: 'testuser@example.com',
+    };
+
+
     const authenticateUserMock = jest.fn().mockImplementation((_authenticationDetails: AuthenticationDetails, callbacks: any) => {
+      const fakeResult = {
+        getIdToken: async () => ({
+          payload: {
+            sub: 'fakeUserId',
+          },
+        }),
+      };
       callbacks.onSuccess('authentication success');
     });
-    const CognitoUserPoolMock = jest.fn().mockImplementation((_options: any) => {
-      return {
-        authenticateUser: authenticateUserMock,
-      };
-    });
-    const CognitoUserMock = jest.fn().mockImplementation((_userData: any) => {
-      return {
-        authenticateUser: authenticateUserMock,
-      };
-    });
+
     jest.spyOn(CognitoUser.prototype, 'authenticateUser').mockImplementation(authenticateUserMock);
 
     // Call the method under test
@@ -57,9 +66,11 @@ describe('AuthService', () => {
     expect(result).toEqual('authentication success');
   });
 
+  
+
   it('should reject with error on authentication failure', async () => {
     // Mock the CognitoUser.authenticateUser method to trigger onFailure callback
-    const mockAuthenticateUser = jest.fn((authDetails, callbacks) => {
+    const mockAuthenticateUser = jest.fn((_authenticationDetails: AuthenticationDetails, callbacks: any) => {
       callbacks.onFailure('authentication failure');
     });
     jest.spyOn(CognitoUser.prototype, 'authenticateUser').mockImplementation(mockAuthenticateUser);

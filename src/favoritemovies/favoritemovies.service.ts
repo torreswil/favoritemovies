@@ -1,10 +1,10 @@
 import { DataMapper, ScanOptions } from '@aws/dynamodb-data-mapper';
 import { Injectable } from '@nestjs/common';
-import { DynamoDBProvider } from 'src/config/dynamodb.provider';
+import { DynamoDBProvider } from '../config/dynamodb.provider';
 import { FavoriteMovie } from './favoritemovie.entity';
-import { MovieService } from 'src/movies/movies.service';
+import { MovieService } from '../movies/movies.service';
 import { TmdbserviceService } from './tmdbservice/tmdbservice.service';
-import { Movie } from 'src/movies/movie.entity';
+import { Movie } from '../movies/movie.entity';
 
 
 @Injectable()
@@ -16,7 +16,7 @@ export class FavoritemoviesService {
         private readonly movieService: MovieService,
         private readonly tmdbserviceService: TmdbserviceService
     ) {
-        this.mapper = dbProvider.mapper;
+        this.mapper = this.dbProvider.mapper;
     }
 
     async addFavoriteMovie(movieId: string, userId: string): Promise<FavoriteMovie> {
@@ -64,7 +64,7 @@ export class FavoritemoviesService {
           };
         
           const favoriteMovies: FavoriteMovie[] = [];
-          for await (const movie of this.mapper.scan(FavoriteMovie, scanOptions)) {
+          for await (const movie of this.mapper.scan(FavoriteMovie, scanOptions) as AsyncIterable<FavoriteMovie>) {
             movie.movie = movie.movie ? JSON.parse(movie?.movie): ''
             favoriteMovies.push(movie);
           }

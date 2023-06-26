@@ -127,7 +127,7 @@ describe('MovieService', () => {
       jest.spyOn(httpService.axiosRef, 'get').mockResolvedValue(axiosResponse);
 
       // Act
-      const result = await movieService.searchMovies('Fast','en-US');
+      const result = await movieService.searchMovies('Fast', 'en-US');
 
       // Assert
       expect(result).toEqual(expectedMovies);
@@ -142,6 +142,49 @@ describe('MovieService', () => {
       // Act and Assert
       try {
         await movieService.searchMovies('Fast', 'en-US');
+        // Si no se lanza ninguna excepción, falla la prueba
+        expect(true).toBe(false);
+      } catch (error) {
+        expect(error).toBe
+      }
+    });
+  });
+
+  describe('getMovieById', () => {
+    it('should return the movie data for a given movie ID', async () => {
+      // Arrange
+      const movieId= '123456';
+      const expectedMovie = {id:movieId}; // Specify the movie ID you want to test
+
+      const axiosResponse: AxiosResponse = {
+        data: expectedMovie,
+        status: 200,
+        statusText: 'OK',
+        headers: undefined,
+        config: undefined
+      };
+
+      jest.spyOn(httpService.axiosRef, 'get').mockResolvedValueOnce(axiosResponse);
+
+      // Act
+      const result = await movieService.getMovieById(movieId);
+
+      // Assert
+      expect(result).toBeDefined();
+      // Add more specific assertions based on the expected movie data
+      expect(result).toBe(expectedMovie);
+    });
+
+    it('should throw an error if an invalid movie ID is provided', async () => {
+      // Arrange
+      const movieId = 'invalid_id'; // Specify an invalid movie ID
+      jest.spyOn(httpService.axiosRef, 'get').mockImplementationOnce(() => {
+        throw new Error('An error happened!');
+      });
+
+      // Act and Assert
+      try {
+        await movieService.getMovieById(movieId);
         // Si no se lanza ninguna excepción, falla la prueba
         expect(true).toBe(false);
       } catch (error) {

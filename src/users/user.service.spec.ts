@@ -13,11 +13,7 @@ describe('UserService', () => {
     }).compile();
 
     service = module.get<UserService>(UserService);
-    documentClient = new DynamoDB.DocumentClient({
-        region: 'us-east-1',
-        accessKeyId: 'AWS_ACCESS_KEY_ID',
-        secretAccessKey: 'AWS_SECRET_ACCESS_KEY',
-      });
+    documentClient = service['documentClient'];
   });
 
   afterEach(() => {
@@ -101,11 +97,10 @@ describe('UserService', () => {
 
       expect(updateSpy).toHaveBeenCalledWith({
         TableName: 'users',
-        Key: { id: '1' },
-        UpdateExpression: 'set #name = :name, email = :email, #password = :password',
+        Key: { userId: '1' },
+        UpdateExpression: 'set #name = :name, email = :email',
         ExpressionAttributeNames: {
-          '#name': 'name',
-          '#password': 'password',
+          '#name': 'name'
         },
         ExpressionAttributeValues: {
           ':name': updatedUser.name,
@@ -126,7 +121,7 @@ describe('UserService', () => {
 
       expect(updateSpy).toHaveBeenCalledWith({
         TableName: 'users',
-        Key: { id: '1' },
+        Key: { userId: '1' },
         UpdateExpression: 'set #name = :name, email = :email',
         ExpressionAttributeNames: {
           '#name': 'name',
@@ -141,6 +136,80 @@ describe('UserService', () => {
     });
   });
 
+  describe('getUserByName', () => {
+    it('should return a user by name', async () => {
+      const name = 'John Doe';
+      const user: User = { userId: '1', name: 'John Doe', email: 'john@example.com' };
+      const scanSpy = jest.spyOn(documentClient, 'scan').mockReturnValue({
+        promise: jest.fn().mockResolvedValue({ Items: [user] }),
+      } as any);
+  
+      const result = await service.getUserByName(name);
+  
+      expect(scanSpy).toHaveBeenCalledWith({
+        TableName: 'users',
+        FilterExpression: '#name = :name',
+        ExpressionAttributeNames: {
+          '#name': 'name',
+        },
+        ExpressionAttributeValues: {
+          ':name': name,
+        },
+      });
+      expect(result).toEqual(user);
+    });
+  
+    it('should return undefined if user does not exist', async () => {
+      const name = 'John Doe';
+      const scanSpy = jest.spyOn(documentClient, 'scan').mockReturnValue({
+        promise: jest.fn().mockResolvedValue({ Items: [] }),
+      } as any);
+  
+      const result = await service.getUserByName(name);
+  
+      expect(scanSpy).toHaveBeenCalledWith({
+        TableName: 'users',
+        FilterExpression: '#name = :name',
+        ExpressionAttributeNames: {
+          '#name': 'name',
+        },
+        ExpressionAttributeValues: {
+          ':name': name,
+        },
+      });
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('createOrUpdate', () => {
+    it('should create a new user if it does not exist', async () => {
+      const name = 'John Doe';
+      const sub = '1';
+
+      const getUserByNameSpy = jest.spyOn(service, 'getUserByName').mockResolvedValue(undefined);
+      const createUserSpy = jest.spyOn(service, 'createUser').mockResolvedValue({ userId: sub, name, email: '' });
+
+      await service.createOrUpdate(name, sub);
+
+      expect(getUserByNameSpy).toHaveBeenCalledWith(name);
+      expect(createUserSpy).toHaveBeenCalledWith({ userId: sub, name, email: '' });
+    });
+
+    it('should update an existing user if it exists', async () => {
+      const name = 'John Doe';
+      const sub = '1';
+      const existingUser: User = { userId: '1', name, email: '' };
+
+      const getUserByNameSpy = jest.spyOn(service, 'getUserByName').mockResolvedValue(existingUser);
+      const updateUserSpy = jest.spyOn(service, 'createUser').mockResolvedValue(existingUser);
+
+      await service.createOrUpdate(name, sub);
+
+      expect(getUserByNameSpy).toHaveBeenCalledWith(name);
+      expect(updateUserSpy).toHaveBeenCalledWith(existingUser.userId, existingUser);
+    });
+  });
+
   describe('deleteUser', () => {
     it('should delete a user', async () => {
       const deleteSpy = jest.spyOn(documentClient, 'delete').mockReturnValue({
@@ -151,7 +220,7 @@ describe('UserService', () => {
 
       expect(deleteSpy).toHaveBeenCalledWith({
         TableName: 'users',
-        Key: { id: '1' },
+        Key: { userId: '1' },
       });
     });
   });

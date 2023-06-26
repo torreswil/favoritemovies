@@ -31,6 +31,7 @@
     "@nestjs/mongoose": "^10.0.0",
     "@nestjs/passport": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/swagger": "^7.0.5",
     "amazon-cognito-identity-js": "^6.3.1",
     "aws-sdk": "^2.1404.0",
     "dotenv": "^16.3.1",
@@ -86,6 +87,7 @@
       "interfaces",
       "jestGlobalMocks.ts",
       ".module.ts",
+      ".entity.ts",
       "../src/main.ts",
       ".mock.ts"
     ]

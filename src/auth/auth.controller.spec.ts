@@ -5,19 +5,22 @@ import { ConfigService } from '@nestjs/config';
 import { ConfigAppModule } from '../config/config.module';
 import { BadRequestException } from '@nestjs/common';
 import { AuthModule } from './auth.module';
+import { UserService } from '../users/user.service';
 
 describe('AuthController', () => {
   let controller: AuthController;
   let authService: AuthService;
+  let userService: UserService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigAppModule, AuthModule],
-      providers: [AuthService, ConfigService],
+      providers: [AuthService, ConfigService, UserService],
       controllers: [AuthController],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
     authService = module.get<AuthService>(AuthService);
+    userService = module.get<UserService>(UserService);
   });
 
   it('should be defined', () => {
@@ -31,15 +34,22 @@ describe('AuthController', () => {
   it('should return a token', async () => {
     // Mock the authentication service
     const user = { name: 'valid_username', password: 'valid_password' };
-    const token = 'valid_token';
-    jest.spyOn(authService, 'authenticateUser').mockResolvedValueOnce({ token });
+    const payload = {
+      accessToken: {
+        payload: {
+          sub: 'valid_sub',
+          username: 'valid_username',
+        }
+      }
+    };
+    jest.spyOn(authService, 'authenticateUser').mockResolvedValueOnce(payload);
 
     // Call the method under test
     const result = await controller.login(user);
 
     // Assertions
     expect(authService.authenticateUser).toHaveBeenCalledWith(user);
-    expect(result).toEqual({ token });
+    expect(result).toEqual(payload);
   });
 
   it('should throw an error', async () => {

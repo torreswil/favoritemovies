@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataMapper } from '@aws/dynamodb-data-mapper';
-import { DynamoDBProvider } from 'src/config/dynamodb.provider';
+import { DynamoDBProvider } from '../config/dynamodb.provider';
 import { Movie } from './movie.entity';
 
 @Injectable()

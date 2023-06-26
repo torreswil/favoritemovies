@@ -20,10 +20,10 @@ export class Movie {
   languages: string;
 
   @attribute()
-  genres: string;
+  genres?: string;
 
   @attribute()
-  originalLanguage: string;
+  originalLanguage?: string;
 
   @attribute()
   title: string;
@@ -41,7 +41,7 @@ export class Movie {
   releaseDate: string;
 
   @attribute()
-  video?: string;
+  video?: boolean|string;
 
   @attribute()
   voteAverage?: string;

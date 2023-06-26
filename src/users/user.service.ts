@@ -43,7 +43,6 @@ export class UserService {
         ':name': name,
       },
     };
-    console.log('params', params);
 
     const result = await this.documentClient.scan(params).promise();
 
@@ -61,7 +60,6 @@ export class UserService {
       Item: user,
     };
     this.documentClient;
-    console.log('params', params);
     await this.documentClient.put(params).promise();
 
     return user;
@@ -97,5 +95,18 @@ export class UserService {
     };
 
     await this.documentClient.delete(params).promise();
+  }
+
+  async createOrUpdate(name: string, sub:string): Promise<void> {
+    let existingUser = await this.getUserByName(name);
+    if (!existingUser) {
+      // Crear el nuevo usuario con el ID de Cognito
+      const newUser: User = {
+        userId: sub, // Obtener el ID de Cognito
+        name: name,
+        email: '', // Puedes asignar un valor por defecto o dejarlo vacío
+      };
+      existingUser = await this.createUser(newUser);
+    }
   }
 }
