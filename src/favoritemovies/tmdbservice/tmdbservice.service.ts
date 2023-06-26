@@ -42,4 +42,17 @@ export class TmdbserviceService {
         );
         return data;
     }
+
+    async getMovieById(movieId: string): Promise<any> {
+        const url = `${this.baseUrl}/movie/${movieId}?api_key=${this.apiKey}`;
+        const { data } = await firstValueFrom(
+            this.httpService.get(url).pipe(
+                catchError((error) => {
+                    //this.logger.error(error);
+                    throw 'An error happened!';
+                }),
+            ),
+        );
+        return data;
+    }
 }

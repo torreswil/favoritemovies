@@ -146,5 +146,7 @@ describe('MovieService', () => {
         expect(true).toBe(false);
       } catch (error) {
         expect(error).toBe
+      }
+    });
   });
 });

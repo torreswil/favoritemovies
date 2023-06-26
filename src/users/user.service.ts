@@ -5,7 +5,7 @@ import { User } from './user.interface';
 @Injectable()
 export class UserService {
   private readonly documentClient: DynamoDB.DocumentClient;
-  private readonly tableName: string = 'favoritemovies';
+  private readonly tableName: string = 'users';
 
   constructor() {
     this.documentClient = new DynamoDB.DocumentClient();

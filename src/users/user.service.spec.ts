@@ -27,8 +27,8 @@ describe('UserService', () => {
   describe('getAllUsers', () => {
     it('should return an array of users', async () => {
       const users: User[] = [
-        { id: '1', name: 'John Doe', email: 'john@example.com' },
-        { id: '2', name: 'Jane Smith', email: 'jane@example.com' },
+        { userId: '1', name: 'John Doe', email: 'john@example.com' },
+        { userId: '2', name: 'Jane Smith', email: 'jane@example.com' },
       ];
       const scanSpy = jest.spyOn(documentClient, 'scan').mockReturnValue({
         promise: jest.fn().mockResolvedValue({ Items: users }),
@@ -43,7 +43,7 @@ describe('UserService', () => {
 
   describe('getUserById', () => {
     it('should return a user by id', async () => {
-      const user: User = { id: '1', name: 'John Doe', email: 'john@example.com' };
+      const user: User = { userId: '1', name: 'John Doe', email: 'john@example.com' };
       const getSpy = jest.spyOn(documentClient, 'get').mockReturnValue({
         promise: jest.fn().mockResolvedValue({ Item: user }),
       } as any);
@@ -74,7 +74,7 @@ describe('UserService', () => {
 
   describe('createUser', () => {
     it('should create a new user', async () => {
-      const user: User = { id: '1', name: 'John Doe', email: 'john@example.com' };
+      const user: User = { userId: '1', name: 'John Doe', email: 'john@example.com' };
       const putSpy = jest.spyOn(documentClient, 'put').mockReturnValue({
         promise: jest.fn().mockResolvedValue({}),
       } as any);
@@ -91,8 +91,8 @@ describe('UserService', () => {
 
   describe('updateUser', () => {
     it('should update a user', async () => {
-      const user: User = { id: '1', name: 'John Doe', email: 'john@example.com' };
-      const updatedUser: User = { id: '1', name: 'Jane Smith', email: 'jane@example.com' };
+      const user: User = { userId: '1', name: 'John Doe', email: 'john@example.com' };
+      const updatedUser: User = { userId: '1', name: 'Jane Smith', email: 'jane@example.com' };
       const updateSpy = jest.spyOn(documentClient, 'update').mockReturnValue({
         promise: jest.fn().mockResolvedValue({ Attributes: updatedUser }),
       } as any);
@@ -117,7 +117,7 @@ describe('UserService', () => {
     });
 
     it('should return undefined if user does not exist', async () => {
-      const updatedUser: User = { id: '1', name: 'Jane Smith', email: 'jane@example.com' };
+      const updatedUser: User = { userId: '1', name: 'Jane Smith', email: 'jane@example.com' };
       const updateSpy = jest.spyOn(documentClient, 'update').mockReturnValue({
         promise: jest.fn().mockResolvedValue({}),
       } as any);
