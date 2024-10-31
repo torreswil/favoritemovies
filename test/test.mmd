@@ -1,12 +1,22 @@
 graph LR
-    InProgress -->|to_update| changesRequired
+    style InProgress shape:circle
+    style changesRequired shape:circle
+    style PendingRiskAnalysis shape:circle
+    style PendingSignatures shape:circle
+    style SignReview shape:circle
+    style Rejected shape:circle
+    style RejectedSigned shape:circle
+    style Approved shape:circle
+    style ChangeRequestedPostSigning shape:circle
+
+    InProgress((In Progress)) -->|to_update| changesRequired((Changes Required))
     changesRequired -->|to_update| InProgress
-    InProgress -->|to_complete| PendingRiskAnalysis
-    PendingRiskAnalysis -->|to_accept_risk| PendingSignatures
+    InProgress -->|to_complete| PendingRiskAnalysis((Pending Risk Analysis))
+    PendingRiskAnalysis -->|to_accept_risk| PendingSignatures((Pending Signatures))
     PendingRiskAnalysis -->|to_require_changes| changesRequired
-    PendingRiskAnalysis -->|to_reject| Rejected
-    PendingSignatures -->|to_sign| SignReview
-    SignReview -->|to_reject_signed| RejectedSigned
-    SignReview -->|to_approve| Approved
-    SignReview -->|to_sign| ChangeRequestedPostSigning
+    PendingRiskAnalysis -->|to_reject| Rejected((Rejected))
+    PendingSignatures -->|to_sign| SignReview((Sign Review))
+    SignReview -->|to_reject_signed| RejectedSigned((Rejected Signed))
+    SignReview -->|to_approve| Approved((Approved))
+    SignReview -->|to_sign| ChangeRequestedPostSigning((Change Requested Post Signing))
     ChangeRequestedPostSigning -->|to_restart| InProgress
